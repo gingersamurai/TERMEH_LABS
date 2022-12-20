@@ -1,80 +1,125 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-import matplotlib
 import math
 
-# matplotlib.use("TkAgg")
+import matplotlib.patches as pat
+import matplotlib.pyplot as plt
+import numpy as np
+import sympy as sp
+from matplotlib.animation import FuncAnimation
 
-t = np.linspace(1, 20, 1001)
+Steps = 1000
 
-x = np.cos(t)
-phi = np.sin(t)
-alpha = math.pi / 4
-l = 3 
-a_side = 2 
-b_side = 1 
-dia = (a_side ** 2 + b_side ** 2) ** (1 / 2)
-betta = np.arctan(b_side / a_side)
-proc = (dia / 2) * np.cos(alpha + betta)
-gec = (dia / 2) * np.sin(alpha + betta)
+t = sp.Symbol('t')
 
-X_A = -x * np.cos(alpha)
-Y_A = -x * np.sin(alpha)
-X_B = X_A - l * np.sin(phi)
-Y_B = Y_A - l * np.cos(phi)
+phi = 4 * sp.sin(t)
+thetta = math.pi / 4 * 5 * t
 
-X_Box = np.array([-proc, proc + (b_side * np.sin(alpha)), proc, -proc - (b_side * np.sin(alpha)), -proc])
-Y_Box = np.array([-gec, gec - (b_side * np.cos(alpha)), gec, -gec + (b_side * np.cos(alpha)), -gec])
+omega_phi = sp.diff(phi, t)
+omega_thetta = sp.diff(thetta, t)
 
-fig = plt.figure(figsize=[15, 15])
-ax = fig.add_subplot(1, 2, 1)
+l = OA = AB = 5
+X_A = OA * sp.cos(phi)
+Y_A = OA * sp.sin(phi)
+
+X_B =  X_A + AB * sp.sin(thetta)
+Y_B =  Y_A  - AB * sp.cos(thetta)
+
+
+V_A = sp.diff(phi,t) * l
+V_r = sp.diff(thetta,t) * l
+
+V_B = sp.sqrt(((l * omega_phi) ** 2) + ((l * omega_thetta) ** 2) - 2 * l * l * omega_phi * omega_thetta * sp.cos(phi - thetta))
+
+Nv= 3
+R1 = 0.001
+R2 = 0.4
+Ksi = np.linspace(0, 0, )
+
+
+fig = plt.figure(figsize=(10,10))
+ax = fig.add_subplot(1,1,1)
 ax.axis('equal')
-ax.set(xlim=[-5, 5], ylim=[-5, 5])
-
-ax.plot(X_A - proc, Y_A - gec, color='grey') 
-Drawed_Box = ax.plot(X_A[0] + X_Box, Y_A[0] + Y_Box, color='blue')[0] 
-Line_AB = ax.plot([X_A[0], X_B[0], ], [Y_A[0], Y_B[0]], color='black')[0]
-Point_A = ax.plot(X_A[0], Y_A[0], marker='o', color='blue')[0] 
-Point_B = ax.plot(X_B[0], Y_B[0], marker='o', markersize=10, color='red')[0] 
+ax.set(xlim=[-10,10], ylim=[-10,10])
 
 
-ax1 = fig.add_subplot(4, 2, 2)
-ax1.plot(t, X_A)
-plt.title('X of the Blue Point', fontdict={'fontsize': 10})
-plt.xlabel('t values', fontdict={'fontsize': 9})
-plt.ylabel('x values', fontdict={'fontsize': 9})
+T            = np.linspace(0, 10, Steps)
+Phi          = np.zeros_like(T)
+Omega_phi    = np.zeros_like(T)
+XB           = np.zeros_like(T)
+YB           = np.zeros_like(T)
+XA           = np.zeros_like(T)
+YA           = np.zeros_like(T)
+Alpha        = np.zeros_like(T)
+Phi          = np.zeros_like(T)
+VB           = np.zeros_like(T)
+VA           = np.zeros_like(T)
 
+for i in range(len(T)):
+    Phi[i] = sp.Subs(phi, t, T[i])
+    Omega_phi[i] = sp.Subs(omega_phi, t, T[i])
+    XA[i] = sp.Subs(X_A, t, T[i])
+    YA[i] = sp.Subs(Y_A, t, T[i])
+    XB[i] = sp.Subs(X_B, t, T[i])
+    YB[i] = sp.Subs(Y_B, t, T[i])
+    Phi[i] = sp.Subs(phi, t, T[i])
+    VB[i] = sp.Subs(V_B, t, T[i])
+    VA[i] = sp.Subs(V_A, t, T[i])
 
-ax2 = fig.add_subplot(4, 2, 4)
-ax2.plot(t, Y_A)
-plt.title('Y of the Blue Point', fontdict={'fontsize': 10})
-plt.xlabel('t values', fontdict={'fontsize': 9})
-plt.ylabel('y values', fontdict={'fontsize': 9})
+alpha = np.linspace(0, Nv*6.283+Phi[0], Steps)
+X_SpiralSpr = -(R1 + alpha * (R2 - R1) / alpha[-1]) * np.sin(alpha)
+Y_SpiralSpr = (R1 + alpha * (R2 - R1) / alpha[-1]) * np.cos(alpha)
 
+beta = np.linspace(0, 2*math.pi, Steps)
+R_Circle = 0.5
+X_Circle = R_Circle * np.cos(beta)
+Y_Circle = R_Circle * np.sin(beta)
 
-ax3 = fig.add_subplot(4, 2, 6)
-ax3.plot(t, X_B)
-plt.title('X of the Red Point', fontdict={'fontsize': 10})
-plt.xlabel('t values', fontdict={'fontsize': 9})
-plt.ylabel('x values', fontdict={'fontsize': 9})
+fig_for_graphs = plt.figure(figsize=[13, 7])
+ax_for_graphs = fig_for_graphs.add_subplot(2, 2, 1)
+ax_for_graphs.plot(T, Phi, color='blue')
+ax_for_graphs.set_title("Phi(t)")
+ax_for_graphs.set(xlim=[0, 10])
+ax_for_graphs.grid(True)
 
+ax_for_graphs = fig_for_graphs.add_subplot(2, 2, 2)
+ax_for_graphs.plot(T, VA, color='red')
+ax_for_graphs.set_title('Va(t)')
+ax_for_graphs.set(xlim=[0, 10])
+ax_for_graphs.grid(True)
 
-ax4 = fig.add_subplot(4, 2, 8)
-ax4.plot(t, Y_B)
-plt.title('Y of the Red Point', fontdict={'fontsize': 10})
-plt.xlabel('t values', fontdict={'fontsize': 9})
-plt.ylabel('y values', fontdict={'fontsize': 9})
+ax_for_graphs = fig_for_graphs.add_subplot(2,2,3)
+ax_for_graphs.plot(T, Omega_phi, color='green')
+ax_for_graphs.set_title("phi'(t) = omega_phi(t)")
+ax_for_graphs.set(xlim=[0, 10])
+ax_for_graphs.grid(True)
 
-plt.subplots_adjust(wspace=0.3, hspace=0.7)
+ax_for_graphs = fig_for_graphs.add_subplot(2, 2, 4)
+ax_for_graphs.plot(T, VB, color='black')
+ax_for_graphs.set_title("Vb(t)")
 
+ax_for_graphs.set(xlim=[0, 10])
+ax_for_graphs.grid(True)
 
-def anima(i):
-    Point_A.set_data(X_A[i], Y_A[i])
-    Point_B.set_data(X_B[i], Y_B[i])
-    Line_AB.set_data([X_A[i], X_B[i], ], [Y_A[i], Y_B[i]])
-    Drawed_Box.set_data(X_A[i] + X_Box, Y_A[i] + Y_Box)
-    return [Point_A, Point_B, Line_AB, Drawed_Box]
+OX = ax.plot([-12, 12], [-0.5,-0.5], 'black', linestyle = '--')
+Draw_Spring = ax.plot(X_SpiralSpr, Y_SpiralSpr, color='#666666')[0]
+Draw_OA=ax.plot([0, XA[0]], [0, YA[0]], color='#808080')[0]
+Draw_AB=ax.plot([XA[0], XB[0]], [YA[0], YB[0]], color='#808080' )[0]
+PointB = ax.plot(XB[0], YB[0])[0]
+PointA = ax.plot(XA[0], YA[0], color='#a0a0a0', marker='o')[0]
+Draw_Circle = ax.plot(X_Circle + XB[0], Y_Circle + YB[0], color='black', linewidth=1)[0]
+triangle = pat.Polygon([(0,0), (-0.5, -0.5), (0.5, -0.5)], color='#d3d3d3')
+ax.add_patch(triangle)
 
-anim = FuncAnimation(fig, anima, frames = 1001, interval = 10)
+def update(i):
+    PointB.set_data(XB[i],YB[i])
+    Draw_OA.set_data([0, XA[i]], [0, YA[i]])
+    PointA.set_data(XA[i], YA[i])
+    Draw_AB.set_data([XA[i], XB[i]], [YA[i], YB[i]])
+    Draw_Circle.set_data(X_Circle + XB[i], Y_Circle + YB[i])
+    alpha = np.linspace(0, Nv*6.28+Phi[i], 100)
+    X_SpiralSpr = -(R1 + alpha * (R2 - R1) / alpha[-1]) * np.sin(alpha - 1.57)
+    Y_SpiralSpr = (R1 + alpha * (R2 - R1) / alpha[-1]) * np.cos(alpha - 1.57)
+    Draw_Spring.set_data(X_SpiralSpr, Y_SpiralSpr)
+    return [PointB, Draw_OA, Draw_Spring, Draw_AB, PointA, Draw_Circle]
+
+anima = FuncAnimation(fig, update, frames=Steps, interval=1)
 plt.show()
