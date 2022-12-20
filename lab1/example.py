@@ -69,4 +69,4 @@ def anima(i):
 
 
 anim = FuncAnimation(fig, anima, frames=1000, interval=2, blit=True, repeat=False)
-# plt.show()
+plt.show()

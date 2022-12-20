@@ -30,8 +30,8 @@ def Animation(i):
 
 # Задача начальных параметров , вычисление необходимых характеристик точки
 t = sp.Symbol('t')
-r = 2+sp.cos(6*t)
-phi = t+1.2*sp.cos(6*t)
+r = 2 + sp.sin(12 * t)
+phi = 1.8 * t + 0.2 * sp.cos(12 * t)
 x = r*sp.cos(phi)
 y = r*sp.sin(phi)
 Vx = sp.diff(x, t)
