@@ -146,6 +146,31 @@ def anima(i):
 anim = FuncAnimation(fig, anima, frames=1000, interval=50, blit=False, repeat=True)
 
 
+fig_graph = plt.figure(figsize=[13, 7])
+ax_graph = fig_graph.add_subplot(2, 2, 1)
+ax_graph.plot(T, phi)
+ax_graph.set_title("phi(t)")
+ax_graph.set(xlim=[0, 10])
+ax_graph.grid(True)
+
+ax_graph = fig_graph.add_subplot(2, 2, 2)
+ax_graph.plot(T, thetta)
+ax_graph.set_title("thetta(t)")
+ax_graph.set(xlim=[0, 10])
+ax_graph.grid(True)
+
+ax_graph = fig_graph.add_subplot(2, 2, 3)
+ax_graph.plot(T, dphi)
+ax_graph.set_title("phi'(t)")
+ax_graph.set(xlim=[0, 10])
+ax_graph.grid(True)
+
+ax_graph = fig_graph.add_subplot(2, 2, 4)
+ax_graph.plot(T, dthetta)
+ax_graph.set_title("thetta'(t)")
+ax_graph.set(xlim=[0, 10])
+ax_graph.grid(True)
+
 
 
 plt.show()
