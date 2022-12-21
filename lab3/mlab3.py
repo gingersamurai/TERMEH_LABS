@@ -26,7 +26,7 @@ def odesys(y, t, g, l, c, k1, k2, m):
 
 
 m = 0.3
-l = 1
+l = 5
 c = 2
 k1 = 1
 k2 = 1
@@ -46,22 +46,22 @@ T = np.linspace(0, 100, 1000)
 
 Y = odeint(odesys, y0, T, (g, l, c, k1, k2, m))
 
-# phi = Y[:, 0]
-# thetta = Y[:, 1]
-# dphi = Y[:, 2]
-# dthetta = Y[:, 3]
-phi = t
-thetta = 2 * np.pi * sp.sin(t)
-print(phi)
+phi = Y[:, 0]
+thetta = Y[:, 1]
+dphi = Y[:, 2]
+dthetta = Y[:, 3]
+# phi = t
+# thetta = 2 * np.pi * sp.sin(t)
+# print(phi)
 
 OA = 5
 AB = 4
 
-X_A = -1 * OA * sp.sin(phi)
-Y_A = OA * sp.cos(phi)
+X_A = -1 * OA * np.sin(phi)
+Y_A = OA * np.cos(phi)
 
-X_B = X_A + AB * sp.sin(thetta)
-Y_B = Y_A - AB * sp.cos(thetta)
+X_B = X_A + AB * np.sin(thetta)
+Y_B = Y_A - AB * np.cos(thetta)
 
 spr_t = sp.symbols('spr_t')
 spr_phi = spr_t
@@ -86,22 +86,26 @@ X_sprt, Y_sprt = Rod2D(X_sprt, Y_sprt, np.pi / 2)
 
 # 
 
+X_At = X_A
+Y_At = Y_A
+X_Bt = X_B
+Y_Bt = Y_B
+phi_t = phi
+# X_At = np.zeros_like(T)
+# Y_At = np.zeros_like(T)
 
-X_At = np.zeros_like(T)
-Y_At = np.zeros_like(T)
+# X_Bt = np.zeros_like(T)
+# Y_Bt = np.zeros_like(T)
 
-X_Bt = np.zeros_like(T)
-Y_Bt = np.zeros_like(T)
+# phi_t = np.zeros_like(T)
+# for i in np.arange(len(T)):
+#     X_At[i] = sp.Subs(X_A, t, T[i])
+#     Y_At[i] = sp.Subs(Y_A, t, T[i])
 
-phi_t = np.zeros_like(T)
-for i in np.arange(len(T)):
-    X_At[i] = sp.Subs(X_A, t, T[i])
-    Y_At[i] = sp.Subs(Y_A, t, T[i])
+#     X_Bt[i] = sp.Subs(X_B, t, T[i])
+#     Y_Bt[i] = sp.Subs(Y_B, t, T[i])
 
-    X_Bt[i] = sp.Subs(X_B, t, T[i])
-    Y_Bt[i] = sp.Subs(Y_B, t, T[i])
-
-    phi_t[i] = sp.Subs(phi, t, T[i])
+#     phi_t[i] = sp.Subs(phi, t, T[i])
 
 
 
@@ -140,4 +144,8 @@ def anima(i):
 
 
 anim = FuncAnimation(fig, anima, frames=1000, interval=50, blit=False, repeat=True)
+
+
+
+
 plt.show()
