@@ -10,15 +10,15 @@ Steps = 1000
 
 t = sp.Symbol('t')
 
-phi = 4 * sp.sin(t)
+phi = 2 * np.pi * sp.sin(t)
 thetta = math.pi / 4 * 5 * t
 
 omega_phi = sp.diff(phi, t)
 omega_thetta = sp.diff(thetta, t)
 
 l = OA = AB = 5
-X_A = OA * sp.cos(phi)
-Y_A = OA * sp.sin(phi)
+X_A = OA * sp.sin(phi)
+Y_A = OA * sp.cos(phi)
 
 X_B =  X_A + AB * sp.sin(thetta)
 Y_B =  Y_A  - AB * sp.cos(thetta)
