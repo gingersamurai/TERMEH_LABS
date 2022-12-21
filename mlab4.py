@@ -25,7 +25,7 @@ def odesys(y, t, g, l, c, k1, k2, m):
     return dy
 
 
-m = 0.3
+m = 100
 l = 5
 c = 2
 k1 = 1
@@ -34,8 +34,8 @@ g = 9.81
 
 t = sp.symbols('t')
 
-phi0 = np.pi / 3
-thetta0 = -np.pi / 3
+phi0 =  np.pi / 6
+thetta0 = np.pi / 3
 dphi0 = 0
 dthetta0 = 0
 
