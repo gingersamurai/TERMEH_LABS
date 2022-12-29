@@ -25,7 +25,7 @@ def odesys(y, t, g, l, c, k1, k2, m):
     return dy
 
 
-m = 100
+m = 0.3
 l = 5
 c = 2
 k1 = 1
@@ -34,10 +34,11 @@ g = 9.81
 
 t = sp.symbols('t')
 
-phi0 =  np.pi / 6
-thetta0 = np.pi / 3
+phi0 = np.pi / 3
+thetta0 = -np.pi / 3
 dphi0 = 0
 dthetta0 = 0
+
 
 y0 = [phi0, thetta0, dphi0, dthetta0]
 
@@ -148,7 +149,7 @@ def anima(i):
     pt_spr.set_data(new_spr_x, new_spr_y)
 
 
-anim = FuncAnimation(fig, anima, frames=1000, interval=50, blit=False, repeat=True)
+anim = FuncAnimation(fig, anima, frames=1000, interval=1, blit=False, repeat=True)
 
 
 fig_graph = plt.figure(figsize=[13, 7])

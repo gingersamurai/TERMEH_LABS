@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-import matplotlib.patches as pat
 import sympy as sp
 from scipy.integrate import odeint
 
@@ -21,27 +20,28 @@ def odesys(y, t, g, l, c, k1, k2, m):
 
     dy[2] = (b1 * a22 - b2 * a12) / (a11 * a22 - a12 * a21)
     dy[3] = (b2 * a11 - b1 * a21) / (a11 * a22 - a12 * a21)
-
+    print(dy)
     return dy
-
-
-m = 0.3
-l = 5
-c = 2
-k1 = 1
-k2 = 1
-g = 9.81
 
 t = sp.symbols('t')
 
-phi0 = np.pi / 3
-thetta0 = -np.pi / 3
+m = 0.5 	
+l = 5		
+c = 8
+k1 = 2
+k2 = 5
+g = 9.81
+phi0 = np.pi / 2
+thetta0 = 0
 dphi0 = 0
 dthetta0 = 0
 
+
+
+
 y0 = [phi0, thetta0, dphi0, dthetta0]
 
-T = np.linspace(0, 100, 1000)
+T = np.linspace(0, 10, 1000)
 
 
 Y = odeint(odesys, y0, T, (g, l, c, k1, k2, m))
@@ -54,11 +54,11 @@ dthetta = Y[:, 3]
 # thetta = 2 * np.pi * sp.sin(t)
 # print(phi)
 
-OA = 5
-AB = 4
+OA = l
+AB = l
 
 X_A = -1 * OA * np.sin(phi)
-Y_A = OA * np.cos(phi)
+Y_A = 1 * OA * np.cos(phi)
 
 X_B = X_A + AB * np.sin(thetta)
 Y_B = Y_A - AB * np.cos(thetta)
@@ -82,7 +82,7 @@ def Rod2D(X, Y, Alpha):
     RY = X * np.sin(Alpha) + Y * np.cos(Alpha)
     return RX, RY
 
-X_sprt, Y_sprt = Rod2D(X_sprt, Y_sprt, np.pi / 2)
+X_sprt, Y_sprt = Rod2D(X_sprt, Y_sprt, np.pi/2)
 
 # 
 
@@ -127,10 +127,12 @@ pt_OA, = ax_main.plot([0, X_At[0]], [0, Y_At[0]], color="blue") #OA
 pt_AB, = ax_main.plot([X_At[0], X_Bt[0]], [Y_At[0], Y_Bt[0]], color="blue") #AB
 
 ax_main.plot(0, 0, marker='o', color="red") #O
-pt_A, = ax_main.plot(X_At[1], Y_At[1], marker='o', color='red') #A
+pt_A, = ax_main.plot(X_At[0], Y_At[0], marker='o', color='red') #A
 pt_B, = ax_main.plot(X_Bt[0], Y_Bt[0], marker='o', markersize=10, color='magenta') #B
 
 pt_spr, = ax_main.plot(X_sprt, Y_sprt)
+
+print(phi[:100])
 
 def anima(i):
     pt_A.set_data(X_At[i], Y_At[i])
@@ -142,33 +144,35 @@ def anima(i):
     new_spr_x, new_spr_y = Rod2D(X_sprt, Y_sprt, phi_t[i])
     pt_spr.set_data(new_spr_x, new_spr_y)
 
+    return pt_A, pt_B, pt_OA, pt_AB, pt_spr
 
-anim = FuncAnimation(fig, anima, frames=1000, interval=50, blit=False, repeat=True)
+
+anim = FuncAnimation(fig, anima, frames=1000, interval=10, blit=True, repeat=True)
 
 
 fig_graph = plt.figure(figsize=[13, 7])
 ax_graph = fig_graph.add_subplot(2, 2, 1)
 ax_graph.plot(T, phi)
 ax_graph.set_title("phi(t)")
-ax_graph.set(xlim=[0, 10])
+ax_graph.set(xlim=[0, T[-1]])
 ax_graph.grid(True)
 
 ax_graph = fig_graph.add_subplot(2, 2, 2)
 ax_graph.plot(T, thetta)
 ax_graph.set_title("thetta(t)")
-ax_graph.set(xlim=[0, 10])
+ax_graph.set(xlim=[0, T[-1]])
 ax_graph.grid(True)
 
 ax_graph = fig_graph.add_subplot(2, 2, 3)
 ax_graph.plot(T, dphi)
 ax_graph.set_title("phi'(t)")
-ax_graph.set(xlim=[0, 10])
+ax_graph.set(xlim=[0, T[-1]])
 ax_graph.grid(True)
 
 ax_graph = fig_graph.add_subplot(2, 2, 4)
 ax_graph.plot(T, dthetta)
 ax_graph.set_title("thetta'(t)")
-ax_graph.set(xlim=[0, 10])
+ax_graph.set(xlim=[0, T[-1]])
 ax_graph.grid(True)
 
 

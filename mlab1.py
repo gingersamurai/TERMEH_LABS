@@ -1,17 +1,14 @@
-# импорт необходимых библиотек
 import numpy as np
 import math
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import sympy as sp
 
-# матрица поворота
 def Rod2D(X, Y, Alpha):
     RX = X * np.cos(Alpha) - Y * np.sin(Alpha)
     RY = X * np.sin(Alpha) + Y * np.cos(Alpha)
     return RX, RY
 
-#рисование векторов в момент времени i
 def Animation(i): 
     Point.set_data(X[i], Y[i])
     Vline.set_data([X[i], X[i] + VX[i]/4], [Y[i], Y[i] + VY[i]/4])
@@ -28,7 +25,6 @@ def Animation(i):
     sp.sqrt((Y[i] + VY[i]) ** 2+(X[i] + VX[i]) ** 2)])
     return Point, Vline, VVecArrow, Rline, RVecArrow, Aline, AVecArrow, CurveVec
 
-# Задача начальных параметров , вычисление необходимых характеристик точки
 t = sp.Symbol('t')
 r = 2 + sp.sin(12 * t)
 phi = 1.8 * t + 0.2 * sp.cos(12 * t)
@@ -43,7 +39,6 @@ A = sp.sqrt(Ax**2+Ay**2)
 Atan = sp.diff(V, t)
 Curve = V**2/sp.sqrt(A**2-Atan**2)
 
-# Создание массивов времен
 T = np.linspace(0, 10, 1000)
 X = np.zeros_like(T)
 Y = np.zeros_like(T)
@@ -55,7 +50,6 @@ A = np.zeros_like(T)
 AT = np.zeros_like(T)
 CurveV = np.zeros_like(T)
 
-#заполнение массивов значениями из интервала T
 for i in np.arange(len(T)): 
     X[i] = sp.Subs(x, t, T[i])
     Y[i] = sp.Subs(y, t, T[i])
@@ -65,7 +59,6 @@ for i in np.arange(len(T)):
     AY[i] = sp.Subs(Ay, t, T[i])
     CurveV[i] = sp.Subs(Curve, t, T[i])
 
-# Отрисовка поля, начальных положений векторов
 fig = plt.figure()
 ax1 = fig.add_subplot(1, 1, 1)
 ax1.axis('equal')
@@ -87,6 +80,5 @@ CurveVec, = ax1.plot([X[0], X[0]+(Y[0]+VY[0])*CurveV[0]/sp.sqrt((Y[0]+VY[0])**2+
     (X[0]+VX[0])**2)], [Y[0], Y[0]-(X[0]+VX[0])*CurveV[0]/sp.sqrt((Y[0]+VY[0])**2+
     (X[0]+VX[0])**2)], 'orange')
 
-# Вывод на экран
 anim = FuncAnimation(fig, Animation, frames=1000, interval=20, blit=True, repeat=False)
 plt.show()
